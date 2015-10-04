@@ -1,0 +1,3 @@
+<% @commits.each do |commit| %>
+  <%= commit.author %>: "<%= commit.message %>" at <strong><%= commit.repository %></strong> <br>
+<% end %>
