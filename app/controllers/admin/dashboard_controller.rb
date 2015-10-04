@@ -6,7 +6,8 @@ class Admin::DashboardController < ApplicationController
   end
 
   def member
-    @commits = Commit.where(organization: params[:organization], author: params[:member]).order(:date)
+    @commits = Commit.where(organization: params[:organization], author: params[:member]).order('date DESC')
+    @pull_requests = PullRequest.where(organization: params[:organization], author: params[:member]).order('date DESC')
   end
 
   def repo
@@ -33,7 +34,19 @@ class Admin::DashboardController < ApplicationController
       octokit.commits_since(record.full_name, app_data.last_updated.to_s).each do |commit|
         Commit.find_or_create_by(sha: commit.sha, author: commit.author.login, message: commit.commit.message,
           organization: params[:organization], repository: record.name, date: commit.author.date)
-      end rescue next
+      end rescue nil
+
+      octokit.pull_requests(record.full_name, state: 'all').each do |pr|
+        pull = PullRequest.find_or_initialize_by(number: pr.number, repo: record.name,
+          organization: params[:organization])
+        pull.state = pr.state
+        pull.merged_at = pr.merged_at
+        pull.date = pr.created_at
+        pull.body = pr.body
+        pull.title = pr.title
+        pull.author = pr.user.login
+        pull.save
+      end
     end
 
     app_data.last_updated = DateTime.now

@@ -1,3 +1,13 @@
 <% @commits.each do |commit| %>
   <%= commit.author %>: "<%= commit.message %>" at <strong><%= commit.repository %></strong> <br>
 <% end %>
+
+<h2>Pull requests</h2>
+<% @pull_requests.each do |pull_request| %>
+  <%= pull_request.author %>: <br>
+  <%= pull_request.title %> <br>
+  <%= pull_request.body %> <br>
+  Merged at: <%= pull_request.merged_at %> <br>
+  at <strong><%= pull_request.repo %></strong> <br>
+  <hr>
+<% end %>

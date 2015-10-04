@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  state: MyString
+  title: MyString
+  body: MyText
+  number: 1
+  merged_at: 2015-10-04 13:59:03
+  repo: MyString
+  organization: MyString
+  date: 2015-10-04 13:59:03
+
+two:
+  state: MyString
+  title: MyString
+  body: MyText
+  number: 1
+  merged_at: 2015-10-04 13:59:03
+  repo: MyString
+  organization: MyString
+  date: 2015-10-04 13:59:03

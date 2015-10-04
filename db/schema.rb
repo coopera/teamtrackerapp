@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151004024242) do
+ActiveRecord::Schema.define(version: 20151004165903) do
 
   create_table "app_data", force: :cascade do |t|
     t.datetime "last_updated"
@@ -34,6 +34,20 @@ ActiveRecord::Schema.define(version: 20151004024242) do
     t.string   "name"
     t.string   "organization"
     t.string   "avatar_url"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "pull_requests", force: :cascade do |t|
+    t.string   "state"
+    t.string   "title"
+    t.text     "body"
+    t.integer  "number"
+    t.datetime "merged_at"
+    t.string   "repo"
+    t.string   "organization"
+    t.string   "author"
+    t.datetime "date"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
   end
