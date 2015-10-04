@@ -8,6 +8,7 @@ class Admin::DashboardController < ApplicationController
   def member
     @commits = Commit.where(organization: params[:organization], author: params[:member]).order('date DESC')
     @pull_requests = PullRequest.where(organization: params[:organization], author: params[:member]).order('date DESC')
+    @issues = Issue.where(organization: params[:organization], author: params[:member]).order('date DESC')
   end
 
   def repo
@@ -47,6 +48,18 @@ class Admin::DashboardController < ApplicationController
         pull.author = pr.user.login
         pull.save
       end
+
+      octokit.issues(record.full_name, state: 'all').each do |iss|
+        issue = Issue.find_or_initialize_by(number: iss.number, repo: record.name,
+          organization: params[:organization])
+        issue.state = iss.state
+        issue.closed_at = iss.closed_at
+        issue.date = iss.created_at
+        issue.title = iss.title
+        issue.body = iss.body
+        issue.author = iss.user.login
+        issue.save
+      end
     end
 
     app_data.last_updated = DateTime.now
@@ -54,6 +67,7 @@ class Admin::DashboardController < ApplicationController
   end
 
   def needs_sync?
+    return false
     last_updated = app_data.last_updated
     return (Time.now - last_updated) > 10.minutes
   end

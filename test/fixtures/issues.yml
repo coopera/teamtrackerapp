@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  number: 1
+  repo: MyString
+  organization: MyString
+  state: MyString
+  closed_at: 2015-10-04 15:03:02
+  title: MyString
+  body: MyText
+  author: MyString
+  date: 2015-10-04 15:03:02
+
+two:
+  number: 1
+  repo: MyString
+  organization: MyString
+  state: MyString
+  closed_at: 2015-10-04 15:03:02
+  title: MyString
+  body: MyText
+  author: MyString
+  date: 2015-10-04 15:03:02

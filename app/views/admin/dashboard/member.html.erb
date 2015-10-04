@@ -1,3 +1,4 @@
+<h2>Commits</h2>
 <% @commits.each do |commit| %>
   <%= commit.author %>: "<%= commit.message %>" at <strong><%= commit.repository %></strong> <br>
 <% end %>
@@ -9,5 +10,15 @@
   <%= pull_request.body %> <br>
   Merged at: <%= pull_request.merged_at %> <br>
   at <strong><%= pull_request.repo %></strong> <br>
+  <hr>
+<% end %>
+
+<h2>Issues</h2>
+<% @issues.each do |issue| %>
+  <%= issue.author %>: <br>
+  <%= issue.title %> <br>
+  <%= issue.body %> <br>
+  Closed at: <%= issue.closed_at %> <br>
+  at <strong><%= issue.repo %></strong> <br>
   <hr>
 <% end %>
