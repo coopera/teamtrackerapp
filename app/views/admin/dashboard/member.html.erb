@@ -10,6 +10,14 @@
   <%= pull_request.body %> <br>
   Merged at: <%= pull_request.merged_at %> <br>
   at <strong><%= pull_request.repo %></strong> <br>
+
+  <pre>
+    <% @comments.select { |x| x.number == pull_request.number && x.repo == pull_request.repo && x.organization == pull_request.organization }.each do |comment| %>
+      <%= comment.date %> > <%= comment.body %> <br>
+      by <%= comment.author %>
+    <% end %>
+  </pre>
+
   <hr>
 <% end %>
 
@@ -20,5 +28,13 @@
   <%= issue.body %> <br>
   Closed at: <%= issue.closed_at %> <br>
   at <strong><%= issue.repo %></strong> <br>
+
+  <pre>
+    <% @comments.select { |x| x.number == issue.number && x.repo == issue.repo && x.organization == issue.organization }.each do |comment| %>
+      <%= comment.date %> > <%= comment.body %> <br>
+      by <%= comment.author %>
+    <% end %>
+  </pre>
+  
   <hr>
 <% end %>

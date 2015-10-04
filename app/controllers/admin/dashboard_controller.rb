@@ -9,6 +9,7 @@ class Admin::DashboardController < ApplicationController
     @commits = Commit.where(organization: params[:organization], author: params[:member]).order('date DESC')
     @pull_requests = PullRequest.where(organization: params[:organization], author: params[:member]).order('date DESC')
     @issues = Issue.where(organization: params[:organization], author: params[:member]).order('date DESC')
+    @comments = Comment.where(organization: params[:organization]).order('date DESC')
   end
 
   def repo
@@ -30,15 +31,15 @@ class Admin::DashboardController < ApplicationController
     end
 
     octokit.organization_repositories(params[:organization]).each do |repo|
-      record = Repository.find_or_initialize_by(name: repo.name, organization: params[:organization])
+      repository = Repository.find_or_initialize_by(name: repo.name, organization: params[:organization])
 
-      octokit.commits_since(record.full_name, app_data.last_updated.to_s).each do |commit|
+      octokit.commits_since(repository.full_name, app_data.last_updated.to_s).each do |commit|
         Commit.find_or_create_by(sha: commit.sha, author: commit.author.login, message: commit.commit.message,
-          organization: params[:organization], repository: record.name, date: commit.author.date)
+          organization: params[:organization], repository: repository.name, date: commit.author.date)
       end rescue nil
 
-      octokit.pull_requests(record.full_name, state: 'all').each do |pr|
-        pull = PullRequest.find_or_initialize_by(number: pr.number, repo: record.name,
+      octokit.pull_requests(repository.full_name, state: 'all').each do |pr|
+        pull = PullRequest.find_or_initialize_by(number: pr.number, repo: repository.name,
           organization: params[:organization])
         pull.state = pr.state
         pull.merged_at = pr.merged_at
@@ -47,10 +48,15 @@ class Admin::DashboardController < ApplicationController
         pull.title = pr.title
         pull.author = pr.user.login
         pull.save
+
+        octokit.pull_request_comments(repository.full_name, pr.number).each do |comment|
+          Comment.find_or_create_by(date: comment.created_at, author: comment.user.login, repo: repository.name,
+            organization: params[:organization], body: comment.body, number: pr.number)
+        end
       end
 
-      octokit.issues(record.full_name, state: 'all').each do |iss|
-        issue = Issue.find_or_initialize_by(number: iss.number, repo: record.name,
+      octokit.issues(repository.full_name, state: 'all').each do |iss|
+        issue = Issue.find_or_initialize_by(number: iss.number, repo: repository.name,
           organization: params[:organization])
         issue.state = iss.state
         issue.closed_at = iss.closed_at
@@ -59,6 +65,11 @@ class Admin::DashboardController < ApplicationController
         issue.body = iss.body
         issue.author = iss.user.login
         issue.save
+
+        octokit.issue_comments(repository.full_name, iss.number).each do |comment|
+          Comment.find_or_create_by(date: comment.created_at, author: comment.user.login, repo: repository.name,
+            organization: params[:organization], body: comment.body, number: iss.number)
+        end
       end
     end
 
@@ -67,7 +78,6 @@ class Admin::DashboardController < ApplicationController
   end
 
   def needs_sync?
-    return false
     last_updated = app_data.last_updated
     return (Time.now - last_updated) > 10.minutes
   end
