@@ -53,6 +53,11 @@ class Admin::DashboardController < ApplicationController
           Comment.find_or_create_by(date: comment.created_at, author: comment.user.login, repo: repository.name,
             organization: params[:organization], body: comment.body, number: pr.number)
         end
+
+        octokit.pull_request_commits(repository.full_name, pr.number).each do |commit|
+          Commit.find_or_create_by(sha: commit.sha, author: commit.author.login, message: commit.commit.message,
+            organization: params[:organization], repo: repository.name, date: commit.author.date, pr_number: pr.number)
+        end
       end
 
       octokit.issues(repository.full_name, state: 'all').each do |iss|
