@@ -35,10 +35,14 @@ ActiveRecord::Schema.define(version: 20151004191435) do
     t.string   "organization"
     t.string   "author"
     t.string   "sha"
-    t.string   "repository"
+    t.string   "repo"
+    t.string   "files_modified"
+    t.integer  "additions"
+    t.integer  "deletions"
+    t.integer  "pr_number"
     t.datetime "date"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "issues", force: :cascade do |t|

@@ -1,6 +1,6 @@
 <h2>Commits</h2>
-<% @commits.each do |commit| %>
-  <%= commit.author %>: "<%= commit.message %>" at <strong><%= commit.repository %></strong> <br>
+<% @commits.where(pr_number: nil).each do |commit| %>
+  <%= commit.author %>: "<%= commit.message %>" at <strong><%= commit.repo %></strong> <br>
 <% end %>
 
 <h2>Pull requests</h2>
@@ -10,6 +10,10 @@
   <%= pull_request.body %> <br>
   Merged at: <%= pull_request.merged_at %> <br>
   at <strong><%= pull_request.repo %></strong> <br>
+
+  <% Commit.where(repo: pull_request.repo, organization: pull_request.organization, pr_number: pull_request.number).each do |commit| %>
+    <%= commit.author %>: "<%= commit.message %>" at <strong><%= commit.repo %></strong> <br>
+  <% end %>
 
   <pre>
     <% @comments.select { |x| x.number == pull_request.number && x.repo == pull_request.repo && x.organization == pull_request.organization }.each do |comment| %>
@@ -35,6 +39,6 @@
       by <%= comment.author %>
     <% end %>
   </pre>
-  
+
   <hr>
 <% end %>

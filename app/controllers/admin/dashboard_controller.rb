@@ -35,7 +35,7 @@ class Admin::DashboardController < ApplicationController
 
       octokit.commits_since(repository.full_name, app_data.last_updated.to_s).each do |commit|
         Commit.find_or_create_by(sha: commit.sha, author: commit.author.login, message: commit.commit.message,
-          organization: params[:organization], repository: repository.name, date: commit.author.date)
+          organization: params[:organization], repo: repository.name, date: commit.author.date)
       end rescue nil
 
       octokit.pull_requests(repository.full_name, state: 'all').each do |pr|
@@ -56,6 +56,8 @@ class Admin::DashboardController < ApplicationController
       end
 
       octokit.issues(repository.full_name, state: 'all').each do |iss|
+        next if iss.pull_request
+
         issue = Issue.find_or_initialize_by(number: iss.number, repo: repository.name,
           organization: params[:organization])
         issue.state = iss.state
@@ -78,6 +80,7 @@ class Admin::DashboardController < ApplicationController
   end
 
   def needs_sync?
+    return false
     last_updated = app_data.last_updated
     return (Time.now - last_updated) > 10.minutes
   end
