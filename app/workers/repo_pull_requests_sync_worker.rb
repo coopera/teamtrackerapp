@@ -1,5 +1,6 @@
 class RepoPullRequestsSyncWorker < SyncWorker
   include Sidekiq::Worker
+  sidekiq_options unique: :until_executed
 
   def perform(org, repo)
     PullRequest.where(organization: org, repo: repo).destroy_all

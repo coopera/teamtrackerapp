@@ -1,6 +1,4 @@
 class Admin::DashboardController < ApplicationController
-  before_filter :sync
-
   def dashboard
     @members = Member.where(organization: params[:organization])
   end

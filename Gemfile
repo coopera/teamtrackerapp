@@ -29,6 +29,8 @@ gem 'rails_12factor'
 gem 'sidekiq'
 gem 'redis'
 gem 'sinatra', :require => nil
+gem 'sidekiq-unique-jobs'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

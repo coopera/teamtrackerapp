@@ -1,5 +1,6 @@
 class OrgMembersSyncWorker < SyncWorker
   include Sidekiq::Worker
+  sidekiq_options unique: :until_executed
 
   def perform(org)
     ActiveRecord::Base.transaction do

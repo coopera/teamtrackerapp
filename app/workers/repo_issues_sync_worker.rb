@@ -1,5 +1,6 @@
 class RepoIssuesSyncWorker < SyncWorker
   include Sidekiq::Worker
+  sidekiq_options unique: :until_executed
 
   def perform(org, repo)
     ActiveRecord::Base.transaction do
