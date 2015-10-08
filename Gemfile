@@ -26,6 +26,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'pg', group: :production
 gem 'rails_12factor'
 
+gem 'sidekiq'
+gem 'redis'
+gem 'sinatra', :require => nil
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

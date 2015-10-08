@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
   namespace :admin do
+    get 'dashboard/:organization/sync', to: 'dashboard#sync', as: :sync
+
     get 'dashboard/:organization', to: 'dashboard#dashboard', as: :organization
     get 'dashboard/:organization/:member', to: 'dashboard#member', as: :member
     get 'dashboard/:organization/:repo', to: 'dashboard#repo', as: :repo

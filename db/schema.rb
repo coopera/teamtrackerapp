@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20151004191435) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "app_data", force: :cascade do |t|
     t.datetime "last_updated"
     t.datetime "created_at",   null: false
