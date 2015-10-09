@@ -10,8 +10,12 @@ class Admin::DashboardController < ApplicationController
     @comments = Comment.where(organization: params[:organization]).order('date DESC')
   end
 
-  def sync
-    SyncService.new(params[:organization]).sync
+  def sync_github
+    SyncService.new(params[:organization]).sync_github
+  end
+
+  def sync_slack
+    SyncService.new(params[:organization]).sync_slack(params[:token])
   end
 
   def needs_sync?

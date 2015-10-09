@@ -31,6 +31,7 @@ gem 'redis'
 gem 'sinatra', :require => nil
 gem 'sidekiq-unique-jobs'
 
+gem 'rest-client'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

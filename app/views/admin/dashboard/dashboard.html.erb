@@ -13,4 +13,9 @@
   <% end %>
 <% end %>
 
-<%= link_to 'Sync', admin_sync_path %>
+<%= link_to 'Sync Github', admin_sync_github_path %>
+
+<%= form_tag(admin_sync_slack_path, method: :get) do |f| %>
+  Slack Token: <%= text_field_tag :token %>
+  <%= submit_tag 'Sync Slack' %>
+<% end %>
