@@ -1,15 +1,11 @@
-class SyncService
+class GithubSyncService
   def initialize(org)
     @org = org
   end
 
-  def sync_github
+  def perform
     OrgMembersSyncWorker.perform_async(@org)
     OrgRepositoriesSyncWorker.perform_async(@org)
-  end
-
-  def sync_slack(token)
-    SlackSyncWorker.perform_async(@org, token)
   end
 
   private
