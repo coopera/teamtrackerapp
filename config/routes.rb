@@ -3,7 +3,10 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   namespace :admin do
-    get 'dashboard/:organization/sync', to: 'dashboard#sync', as: :sync
+    post 'dashboard/:organization/:slack_github', to: 'dashboard#slack_github', as: :slack_github
+    
+    get 'dashboard/:organization/sync_github', to: 'dashboard#sync_github', as: :sync_github
+    get 'dashboard/:organization/sync_slack', to: 'dashboard#sync_slack', as: :sync_slack
 
     get 'dashboard/:organization', to: 'dashboard#dashboard', as: :organization
     get 'dashboard/:organization/:member', to: 'dashboard#member', as: :member

@@ -13,4 +13,21 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require bootstrap
 //= require_tree .
+
+var ready;
+ready = function() {
+  $(".statistics li").tooltip();
+
+  $(".slack_set_member").on('change', function() {
+    var github = this.dataset.github;
+
+    $.post('slack_github', { github: github, slack: this.value }).done(function() {
+      location.reload();
+    });
+  });
+};
+
+$(document).ready(ready);
+$(document).on('page:load', ready);
