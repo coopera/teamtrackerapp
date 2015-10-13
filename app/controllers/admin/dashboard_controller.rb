@@ -20,18 +20,18 @@ class Admin::DashboardController < ApplicationController
   end
 
   def sync_github
-    SyncService.new(params[:organization]).sync_github
+    GithubSyncService.perform(params([:organization]))
   end
 
   def sync_slack
-    SyncService.new(params[:organization]).sync_slack(params[:token])
+    SlackSyncService.perform(params[:organization], params[:token])
   end
 
   def slack_github
     sg = SlackGithub.find_or_initialize_by(organization: params[:organization], github: params[:github])
     sg.slack = params[:slack]
     sg.save
-    
+
     render nothing: true
   end
 
