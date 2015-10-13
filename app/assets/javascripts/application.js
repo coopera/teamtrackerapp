@@ -23,7 +23,7 @@ ready = function() {
   $(".slack_set_member").on('change', function() {
     var github = this.dataset.github;
 
-    $.post('slack_github', { github: github, slack: this.value }).done(function() {
+    $.post(window.location + '/slack_github', { github: github, slack: this.value }).done(function() {
       location.reload();
     });
   });
