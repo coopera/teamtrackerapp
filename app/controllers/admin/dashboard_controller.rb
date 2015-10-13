@@ -1,6 +1,15 @@
 class Admin::DashboardController < ApplicationController
   def dashboard
-    @members = Member.where(organization: params[:organization])
+    @members = MemberDecorator.decorate_collection(
+      Member.where(organization: params[:organization])
+    )
+    @repos = RepositoryDecorator.decorate_collection(
+      Repository.where(organization: params[:organization])
+    ).sort_by(&:number_of_commits).reverse!
+    @organization = OrganizationDecorator.decorate(
+      params[:organization]
+    )
+    @slack_members = SlackMessage.pluck(:author).uniq
   end
 
   def member
@@ -16,6 +25,14 @@ class Admin::DashboardController < ApplicationController
 
   def sync_slack
     SyncService.new(params[:organization]).sync_slack(params[:token])
+  end
+
+  def slack_github
+    sg = SlackGithub.find_or_initialize_by(organization: params[:organization], github: params[:github])
+    sg.slack = params[:slack]
+    sg.save
+    
+    render nothing: true
   end
 
   def needs_sync?

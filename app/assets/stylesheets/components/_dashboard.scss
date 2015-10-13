@@ -1,0 +1,46 @@
+.dashboard-members {
+  @extend .col-md-9;
+  padding-bottom: 1em;
+
+  .profile-box {
+    @extend .col-md-4;
+
+    display: table;
+    padding: 1em;
+
+    .statistics {
+      display: table-cell;
+      vertical-align: middle;
+      margin: auto;
+
+      a {
+        font-weight: bold;
+      }
+    }
+
+    .avatar {
+      display: table-cell;
+      color: black;
+      text-align: center;
+
+      p {
+        margin: 0;
+      }
+
+      img {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        margin: auto;
+        display: block;
+      }
+    }
+  }
+}
+
+.dashboard-panel {
+  @extend .col-md-3;
+
+  .statistics {
+  }
+}
