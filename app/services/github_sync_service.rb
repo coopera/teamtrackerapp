@@ -1,4 +1,4 @@
-class GithubSyncService
+class GithubSyncService < ApplicationService
   def initialize(org)
     @org = org
   end

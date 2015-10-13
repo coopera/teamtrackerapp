@@ -1,4 +1,4 @@
-class SlackSyncService
+class SlackSyncService < ApplicationService
   def initialize(org, token)
     @org, @token = org, token
   end

@@ -20,7 +20,7 @@ class Admin::DashboardController < ApplicationController
   end
 
   def sync_github
-    GithubSyncService.perform(params([:organization]))
+    GithubSyncService.perform(params[:organization])
   end
 
   def sync_slack
@@ -33,10 +33,6 @@ class Admin::DashboardController < ApplicationController
     sg.save
 
     render nothing: true
-  end
-
-  def needs_sync?
-    return false
   end
 
 end
