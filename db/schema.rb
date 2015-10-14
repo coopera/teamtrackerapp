@@ -17,10 +17,13 @@ ActiveRecord::Schema.define(version: 20151013061132) do
   enable_extension "plpgsql"
 
   create_table "app_data", force: :cascade do |t|
-    t.datetime "last_updated"
+    t.datetime "gh_last_updated"
+    t.datetime "slack_last_updated"
+    t.string   "last_slack_ts"
+    t.string   "slack_token"
     t.string   "organization"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
   create_table "comments", force: :cascade do |t|

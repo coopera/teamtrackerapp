@@ -43,15 +43,23 @@
   </div>
 
   <div class="dashboard-panel">
-    <%= link_to 'Sync Github', admin_sync_github_path, class: 'btn btn-primary' %>
+    <%= form_tag(admin_sync_github_path, method: :get) do |f| %>
+      <div class="input-group">
+        <input disabled type="text" class="form-control" placeholder="Last sync at <%= @organization.gh_last_sync %>">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="submit">Sync Github</button>
+        </span>
+      </div>
+    <% end %>
 
     <%= form_tag(admin_sync_slack_path, method: :get) do |f| %>
       <div class="input-group">
-        <input type="text" name="token" class="form-control" placeholder="Slack Token">
+        <input <%= @organization.slack_token.nil? ? "" : "disabled" %> type="text" name="token" class="form-control" placeholder="<%= @organization.slack_token %>">
         <span class="input-group-btn">
-          <button class="btn btn-primary" type="submit">Sync Slack</button>
+          <button class="btn btn-primary" type="submit">&nbsp;&nbsp;Sync Slack</button>
         </span>
       </div>
+      <i>Last sync at <%= @organization.slack_last_sync %></i>
     <% end %>
 
     <h3>General Statistics</h3>
@@ -72,7 +80,7 @@
         <i class="fa fa-check-circle"></i> <%= @organization.number_of_issues_closed %> Issues closed
       </li>
       <li>
-        Last sync at <i><%= @organization.last_sync %></i>
+
       </li>
     </ul>
 

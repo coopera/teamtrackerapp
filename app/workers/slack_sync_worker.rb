@@ -2,15 +2,21 @@ require 'json'
 
 class SlackSyncWorker
   include Sidekiq::Worker
-  sidekiq_options unique: :until_executed
+  sidekiq_options unique: :while_executing
 
   def perform(org, token)
     @token = token
+    return if token.blank?
+
+    file = File.open('foo.log', File::WRONLY | File::APPEND)
+    # To create new (and to remove old) logfile, add File::CREAT like:
+    # file = File.open('foo.log', File::WRONLY | File::APPEND | File::CREAT)
+    logger = Logger.new(file)
 
     ActiveRecord::Base.transaction do
       app_data = AppData.find_by(organization: org)
-      @last_updated = app_data.last_updated
-      older_last_updated = DateTime.current - 10.years
+      @oldest = app_data.last_slack_ts || '1000000000.000000'
+      last_oldest = @oldest
 
       puts "https://slack.com/api/users.list?#{build_channels_query}"
       members = Hash[
@@ -19,8 +25,6 @@ class SlackSyncWorker
         end
       ]
 
-      @oldest = '1000000000.000000'
-
       puts "https://slack.com/api/channels.list?#{build_channels_query}"
       channels = Hash[
         JSON.parse(RestClient.get("https://slack.com/api/channels.list?#{build_channels_query}"))["channels"].map do |channel|
@@ -28,17 +32,18 @@ class SlackSyncWorker
         end
       ]
 
-      channels.each do |channel|
-        @channel = channel["id"]
+      logger.info(members)
+      logger.info(channels)
+
+      channels.keys.each do |channel|
+        @channel = channel
         has_more = true
-        @last_updated = app_data.last_updated
 
         while has_more
           puts "https://slack.com/api/channels.history?#{build_history_query}"
           history = JSON.parse(RestClient.get("https://slack.com/api/channels.history?#{build_history_query}"))
 
           history["messages"].each do |message|
-            @last_updated = Time.at(message["ts"].to_f)
             @oldest = message["ts"]
 
             next if message["type"] != "message" || message["text"].blank?
@@ -55,12 +60,13 @@ class SlackSyncWorker
           has_more = history["has_more"]
         end
 
-        if @last_updated > older_last_updated
-          older_last_updated = app_data.last_updated
+        if @oldest.to_f > last_oldest.to_f
+          last_oldest = @oldest
         end
       end
 
-      app_data.last_updated = older_last_updated
+      app_data.last_slack_ts = last_oldest
+      app_data.slack_token = token
       app_data.save
     end
   end

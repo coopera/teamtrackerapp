@@ -1,9 +1,11 @@
-class AdminController < ApplicationController
+class Admin::AdminController < ApplicationController
+  before_filter :app_data
+
   def octokit
     @client ||= Octokit::Client.new(:login => ENV['login'], :password => ENV['password'])
   end
 
   def app_data
-    @app_data ||= (AppData.first || AppData.create(last_updated: DateTime.new(2001,2,3)))
+    @app_data ||= (AppData.first || AppData.create(organization: params[:organization]))
   end
 end
