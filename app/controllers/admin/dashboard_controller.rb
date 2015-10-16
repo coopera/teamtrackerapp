@@ -1,4 +1,4 @@
-class Admin::DashboardController < ApplicationController
+class Admin::DashboardController < Admin::AdminController
   def dashboard
     @members = MemberDecorator.decorate_collection(
       Member.where(organization: params[:organization])
@@ -21,10 +21,20 @@ class Admin::DashboardController < ApplicationController
 
   def sync_github
     GithubSyncService.perform(params[:organization])
+
+    app_data.gh_last_updated = DateTime.current
+    app_data.save
+
+    redirect_to admin_organization_path
   end
 
   def sync_slack
     SlackSyncService.perform(params[:organization], params[:token])
+
+    app_data.slack_last_updated = DateTime.current
+    app_data.save
+
+    redirect_to admin_organization_path
   end
 
   def slack_github
