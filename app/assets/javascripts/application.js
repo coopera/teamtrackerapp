@@ -12,8 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require bootstrap
+//= require turbolinks
 //= require_tree .
 
 var ready;
@@ -26,6 +26,10 @@ ready = function() {
     $.post(window.location + '/slack_github', { github: github, slack: this.value }).done(function() {
       location.reload();
     });
+  });
+
+  $('.collapsor').on('click', function(e) {
+    $(e.currentTarget).children('i').toggleClass("fa-caret-down").toggleClass("fa-caret-right");
   });
 };
 
