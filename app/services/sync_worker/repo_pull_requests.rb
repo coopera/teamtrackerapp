@@ -9,6 +9,7 @@ class SyncWorker::RepoPullRequests < SyncWorker::Base
         organization: org,
         state: pr.state,
         merged_at: pr.merged_at,
+        closed_at: pr.closed_at,
         date: pr.created_at,
         body: pr.body,
         title: pr.title,

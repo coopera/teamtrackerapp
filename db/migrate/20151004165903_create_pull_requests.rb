@@ -6,6 +6,7 @@ class CreatePullRequests < ActiveRecord::Migration
       t.text :body
       t.integer :number
       t.datetime :merged_at
+      t.datetime :closed_at
       t.string :repo
       t.string :organization
       t.string :author
