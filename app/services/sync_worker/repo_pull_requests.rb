@@ -10,7 +10,7 @@ class SyncWorker::RepoPullRequests < SyncWorker::Base
         state: pr.state,
         merged_at: pr.merged_at,
         date: pr.created_at,
-        body: prd.body,
+        body: pr.body,
         title: pr.title,
         author: pr.user.login)
 

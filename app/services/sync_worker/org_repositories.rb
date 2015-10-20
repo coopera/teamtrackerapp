@@ -4,7 +4,7 @@ class SyncWorker::OrgRepositories < SyncWorker::Base
       Repository.where(organization: org).destroy_all
 
       octokit.organization_repositories(org).each do |repo|
-        repository = Repository.create(name: repo.name, organization: org)
+        Repository.create(name: repo.name, organization: org)
 
         RepoIssuesSyncWorker.perform_async(org, repo.name)
         RepoCommitsSyncWorker.perform_async(org, repo.name)

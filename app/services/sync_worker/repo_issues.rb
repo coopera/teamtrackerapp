@@ -9,13 +9,14 @@ class SyncWorker::RepoIssues < SyncWorker::Base
         Issue.create(
           number: iss.number,
           repo: repo,
-          organization: org
-          state: iss.stae,
+          organization: org,
+          state: iss.state,
           closed_at: iss.closed_at,
           date: iss.created_at,
           title: iss.title,
           body: iss.body,
-          author: iss.user.login)
+          author: iss.user.login
+        )
 
         CommentsSyncWorker.new.perform(org, repo, iss.number, :issue)
       end

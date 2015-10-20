@@ -7,5 +7,6 @@ class SyncWorker::Comments < SyncWorker::Base
         Comment.create(date: comment.created_at, author: comment.user.login, repo: repo,
           organization: org, body: comment.body, number: number)
       end
+    end
   end
 end
