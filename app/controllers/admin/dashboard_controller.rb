@@ -25,8 +25,10 @@ class Admin::DashboardController < Admin::AdminController
       Issue.where(organization: params[:organization], author: params[:member])
       .order('date DESC')
     ).group_by(&:repo)
-    @comments = Comment.where(organization: params[:organization])
-      .order('date DESC').group_by(&:repo)
+    @comments = CommentDecorator.decorate_collection(
+      Comment.where(organization: params[:organization], author: params[:member])
+      .order('date DESC')
+    ).group_by(&:repo)
   end
 
   def sync_github

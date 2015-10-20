@@ -48,3 +48,20 @@
     </ul>
   <% end %>
 </div>
+
+<div class="activity">
+  <h3>Issue/PR activity</h3>
+
+  <% @comments.each do |repo, comments| %>
+    <ul>
+      <li class="repo_name"><strong><%= repo %></strong></li>
+      <% comments.group_by(&:number).each do |number, comments_by_number| %>
+        <li>
+          <%= comments_by_number.length %> comments on
+          <a href="<%= comments_by_number.first.activity_url %>">#<%= number %></a>
+        </li>
+      <% end %>
+      <li><strong>Total comments:</strong> <%= comments.length %></li>
+    </ul>
+  <% end %>
+</div>
