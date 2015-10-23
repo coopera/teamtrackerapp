@@ -16,6 +16,21 @@
 //= require turbolinks
 //= require_tree .
 
+function MemberDashboardListener() {
+  $('#member-dash select').on('change', function() {
+    var value = this.value;
+
+    console.log(value);
+
+    if (value == "all") {
+      $('#member-dash ul').show();
+    } else {
+      $('#member-dash ul').hide();
+      $('.' + value).show();
+    }
+  });
+}
+
 var ready;
 ready = function() {
   $(".statistics li").tooltip();
@@ -30,6 +45,12 @@ ready = function() {
 
   $('.collapsor').on('click', function(e) {
     $(e.currentTarget).children('i').toggleClass("fa-caret-down").toggleClass("fa-caret-right");
+  });
+
+  MemberDashboardListener();
+
+  $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+    $('#member-dash select').val('all').change();
   });
 };
 
