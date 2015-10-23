@@ -25,11 +25,12 @@
     </select>
 
     <% @non_pr_commits.each do |repo, commits| %>
-      <ul class="<%= repo %>">
+      <ul class="<%= repo.gsub('.', '_') %>">
         <li class="repo_name"><strong><%= repo %></strong></li>
         <% commits.each do |commit| %>
           <li><a href="<%= commit.url %>"><%= commit.sha %></a> <%= commit.message %></a></li>
         <% end %>
+        <li><strong>Total commits:</strong> <%= commits.length %></li>
       </ul>
     <% end %>
   </div>
@@ -46,7 +47,7 @@
     </select>
 
     <% @opened_prs.each do |repo, prs| %>
-      <ul class="<%= repo %>">
+      <ul class="<%= repo.gsub('.', '_') %>">
         <li class="repo_name"><strong><%= repo %></strong></li>
         <% prs.each do |pull_request| %>
           <li class="<%= pull_request.css_class %>">
@@ -82,7 +83,7 @@
     </select>
 
     <% @opened_issues.each do |repo, issues| %>
-      <ul class="<%= repo %>">
+      <ul class="<%= repo.gsub('.', '_') %>">
         <li class="repo_name"><strong><%= repo %></strong></li>
         <% issues.each do |issue| %>
           <li class="<%= issue.css_class %>"><%= issue.closed_badge %> <a href="<%= issue.url %>">#<%= issue.number %></a> <%= issue.title %></li>
@@ -103,7 +104,7 @@
     </select>
 
     <% @comments.each do |repo, comments| %>
-      <ul class="<%= repo %>">
+      <ul class="<%= repo.gsub('.', '_') %>">
         <li class="repo_name"><strong><%= repo %></strong></li>
         <% comments.group_by(&:number).each do |number, comments_by_number| %>
           <li>

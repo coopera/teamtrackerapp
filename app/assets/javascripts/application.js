@@ -18,7 +18,7 @@
 
 function MemberDashboardListener() {
   $('#member-dash select').on('change', function() {
-    var value = this.value;
+    var value = this.value.replace(/\./g, '_');;
 
     console.log(value);
 
