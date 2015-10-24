@@ -12,9 +12,24 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require bootstrap
+//= require turbolinks
 //= require_tree .
+
+function MemberDashboardListener() {
+  $('#member-dash select').on('change', function() {
+    var value = this.value.replace(/\./g, '_');;
+
+    console.log(value);
+
+    if (value == "all") {
+      $('#member-dash ul').show();
+    } else {
+      $('#member-dash ul').hide();
+      $('.' + value).show();
+    }
+  });
+}
 
 var ready;
 ready = function() {
@@ -26,6 +41,16 @@ ready = function() {
     $.post(window.location + '/slack_github', { github: github, slack: this.value }).done(function() {
       location.reload();
     });
+  });
+
+  $('.collapsor').on('click', function(e) {
+    $(e.currentTarget).children('i').toggleClass("fa-caret-down").toggleClass("fa-caret-right");
+  });
+
+  MemberDashboardListener();
+
+  $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+    $('#member-dash select').val('all').change();
   });
 };
 

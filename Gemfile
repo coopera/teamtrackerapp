@@ -30,6 +30,8 @@ gem 'faraday-http-cache'
 gem 'pg', group: :production
 gem 'sdoc', '~> 0.4.0', group: :doc
 
+gem 'dotenv-rails'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -42,7 +44,6 @@ end
 
 group :development, :test do
   gem 'pry-rails'
-  gem 'dotenv-rails'
   gem 'byebug'
   gem 'web-console', '~> 2.0'
   gem 'spring'

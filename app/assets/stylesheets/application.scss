@@ -11,6 +11,10 @@ html, body {
   background: #dedede;
 }
 
+li {
+  padding: 3px;
+}
+
 form {
   margin-top: 1em;
   margin-bottom: 1em;
@@ -19,4 +23,34 @@ form {
 ul {
   list-style: none;
   padding: 0;
+}
+
+.details {
+  p {
+    padding-left: 1em;
+    padding-top: 1em;
+    padding-bottom: 0;
+    font-style: italic;
+  }
+
+  ul {
+    padding: 1em;
+    padding-left: 1em;
+  }
+}
+
+.badge {
+  min-width: 60px;
+}
+
+.closed.badge {
+  background: red;
+}
+
+.open.badge {
+  background: green;
+}
+
+.merged.badge {
+  background: fuchsia;
 }

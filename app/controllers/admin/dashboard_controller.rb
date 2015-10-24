@@ -13,10 +13,22 @@ class Admin::DashboardController < Admin::AdminController
   end
 
   def member
-    @commits = Commit.where(organization: params[:organization], author: params[:member]).order('date DESC')
-    @pull_requests = PullRequest.where(organization: params[:organization], author: params[:member]).order('date DESC')
-    @issues = Issue.where(organization: params[:organization], author: params[:member]).order('date DESC')
-    @comments = Comment.where(organization: params[:organization]).order('date DESC')
+    @non_pr_commits = CommitDecorator.decorate_collection(
+      Commit.where(organization: params[:organization], author: params[:member], pr_number: nil)
+      .order('date DESC')
+    ).group_by(&:repo)
+    @opened_prs = PullRequestDecorator.decorate_collection(
+      PullRequest.where(organization: params[:organization], author: params[:member])
+      .order('date DESC')
+    ).group_by(&:repo)
+    @opened_issues = IssueDecorator.decorate_collection(
+      Issue.where(organization: params[:organization], author: params[:member])
+      .order('date DESC')
+    ).group_by(&:repo)
+    @comments = CommentDecorator.decorate_collection(
+      Comment.where(organization: params[:organization], author: params[:member])
+      .order('date DESC')
+    ).group_by(&:repo)
   end
 
   def sync_github

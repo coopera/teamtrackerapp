@@ -1,41 +1,124 @@
-<h2>Commits</h2>
-<% @commits.where(pr_number: nil).each do |commit| %>
-  <%= commit.author %>: "<%= commit.message %>" at <strong><%= commit.repo %></strong> <br>
-<% end %>
+<h1>Teamtracker for <%= params[:organization] %> / <%= params[:member] %></h1>
 
-<h2>Pull requests</h2>
-<% @pull_requests.each do |pull_request| %>
-  <%= pull_request.author %>: <br>
-  <%= pull_request.title %> <br>
-  <%= pull_request.body %> <br>
-  Merged at: <%= pull_request.merged_at %> <br>
-  at <strong><%= pull_request.repo %></strong> <br>
+<div class="container-fluid">
 
-  <h3>Commits</h3>
-  <% Commit.where(repo: pull_request.repo, organization: pull_request.organization, pr_number: pull_request.number).each do |commit| %>
-    >>>>>>>> <%= commit.author %>: "<%= commit.message %>" at <strong><%= commit.repo %></strong> <br>
-  <% end %>
+  <ul class="nav nav-pills tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+    <li role="presentation"><a href="#commits" aria-controls="profile" role="tab" data-toggle="tab">Commits</a></li>
+    <li role="presentation"><a href="#prs" aria-controls="messages" role="tab" data-toggle="tab">Pull Requests</a></li>
+    <li role="presentation"><a href="#issues" aria-controls="messages" role="tab" data-toggle="tab">Issues</a></li>
+    <li role="presentation"><a href="#activity" aria-controls="messages" role="tab" data-toggle="tab">Activity</a></li>
+  </ul>
 
-  <h3>Comments</h3>
-  <% @comments.select { |x| x.number == pull_request.number && x.repo == pull_request.repo && x.organization == pull_request.organization }.each do |comment| %>
-    ---------------- <%= comment.date %> > <%= comment.body %> by <%= comment.author %> <br>
-  <% end %>
+  <div class="tab-content" id="member-dash">
 
-  <hr>
-<% end %>
+    <div role="tabpanel" class="tab-pane active" id="home">
+      #todo add some cool graphics (maybe d3.js?)
+    </div>
 
-<h2>Issues</h2>
-<% @issues.each do |issue| %>
-  <%= issue.author %>: <br>
-  <%= issue.title %> <br>
-  <%= issue.body %> <br>
-  Closed at: <%= issue.closed_at %> <br>
-  at <strong><%= issue.repo %></strong> <br>
+    <div role="tabpanel" class="tab-pane" id="commits">
+      <h3>Commits</h3>
 
-  <h3>Comments</h3>
-  <% @comments.select { |x| x.number == issue.number && x.repo == issue.repo && x.organization == issue.organization }.each do |comment| %>
-    ---------------- <%= comment.date %> > <%= comment.body %> by <%= comment.author %> <br>
-  <% end %>
+      <h4>Filter by:</h4>
+      <select>
+        <option value="all">All</option>
+        <% @non_pr_commits.keys.each do |repo| %>
+          <option value="<%= repo %>"><%= repo %></option>
+        <% end %>
+      </select>
 
-  <hr>
-<% end %>
+      <% @non_pr_commits.each do |repo, commits| %>
+        <ul class="<%= repo.gsub('.', '_') %>">
+          <li class="repo_name"><strong><%= repo %></strong></li>
+          <% commits.each do |commit| %>
+            <li><a href="<%= commit.url %>"><%= commit.sha %></a> <%= commit.message %></a></li>
+          <% end %>
+          <li><strong>Total commits:</strong> <%= commits.length %></li>
+        </ul>
+      <% end %>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="prs">
+      <h3>Pull Requests</h3>
+
+      <h4>Filter by:</h4>
+      <select>
+        <option value="all">All</option>
+        <% @opened_prs.keys.each do |repo| %>
+          <option value="<%= repo %>"><%= repo %></option>
+        <% end %>
+      </select>
+
+      <% @opened_prs.each do |repo, prs| %>
+        <ul class="<%= repo.gsub('.', '_') %>">
+          <li class="repo_name"><strong><%= repo %></strong></li>
+          <% prs.each do |pull_request| %>
+            <li class="<%= pull_request.css_class %>">
+              <%= pull_request.merged_badge %> <a href="<%= pull_request.url %>">#<%= pull_request.number %></a> <%= pull_request.title %>
+              <a data-toggle="collapse" href="#commits<%= pull_request.number %>" class="collapsor">
+                <i class="fa fa-caret-down"></i>
+              </a>
+
+              <div class="details collapse" id="commits<%= pull_request.number %>">
+                <%= pull_request.body %>
+                <ul>
+                  <% CommitDecorator.decorate_collection(Commit.where(repo: pull_request.repo, organization: pull_request.organization, pr_number: pull_request.number)).each do |commit| %>
+                    <li><a href="<%= commit.url %>"><%= commit.sha %></a> <%= commit.message %></a></li>
+                  <% end %>
+                </ul>
+              </div>
+            </li>
+
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="issues">
+      <h3>Issues Opened</h3>
+
+      <h4>Filter by:</h4>
+      <select>
+        <option value="all">All</option>
+        <% @opened_issues.keys.each do |repo| %>
+          <option value="<%= repo %>"><%= repo %></option>
+        <% end %>
+      </select>
+
+      <% @opened_issues.each do |repo, issues| %>
+        <ul class="<%= repo.gsub('.', '_') %>">
+          <li class="repo_name"><strong><%= repo %></strong></li>
+          <% issues.each do |issue| %>
+            <li class="<%= issue.css_class %>"><%= issue.closed_badge %> <a href="<%= issue.url %>">#<%= issue.number %></a> <%= issue.title %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="activity">
+      <h3>Issue/PR activity</h3>
+
+      <h4>Filter by:</h4>
+      <select>
+        <option value="all">All</option>
+        <% @comments.keys.each do |repo| %>
+          <option value="<%= repo %>"><%= repo %></option>
+        <% end %>
+      </select>
+
+      <% @comments.each do |repo, comments| %>
+        <ul class="<%= repo.gsub('.', '_') %>">
+          <li class="repo_name"><strong><%= repo %></strong></li>
+          <% comments.group_by(&:number).each do |number, comments_by_number| %>
+            <li>
+              <%= comments_by_number.length %> comments on
+              <a href="<%= comments_by_number.first.activity_url %>">#<%= number %></a>
+            </li>
+          <% end %>
+          <li><strong>Total comments:</strong> <%= comments.length %></li>
+        </ul>
+      <% end %>
+    </div>
+
+  </div>
+</div>
