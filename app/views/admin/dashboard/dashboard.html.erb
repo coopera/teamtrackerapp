@@ -17,8 +17,6 @@
               <% end %>
             </select>
           </p>
-
-
         </div>
 
         <ul class="statistics">
@@ -85,9 +83,12 @@
     </ul>
 
     <h3>Repositories</h3>
-    <ul class="repositories">
+    <ul class="list-group repositories">
       <% @repos.each do |repo| %>
-        <li><%= link_to repo.name, admin_repo_path(params[:organization], repo.name) %></li>
+        <li class="list-group-item">
+          <%= link_to repo.name, admin_repo_path(params[:organization], repo.name) %>
+          <span class="pull-right"><%= link_to '<i class="fa fa-github"></i> Pulse'.html_safe, "https://github.com/#{params[:organization]}/#{repo.name}/pulse" %></span>
+        </li>
       <% end %>
     </ul>
   </div>
