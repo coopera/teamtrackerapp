@@ -9,8 +9,8 @@ Rails.application.routes.draw do
     get 'dashboard/:organization/sync_slack', to: 'dashboard#sync_slack', as: :sync_slack
 
     get 'dashboard/:organization', to: 'dashboard#dashboard', as: :organization
-    get 'dashboard/:organization/:member', to: 'dashboard#member', as: :member
-    get 'dashboard/:organization/:repo', to: 'dashboard#repo', as: :repo
+    get 'dashboard/:organization/member/:member', to: 'dashboard#member', as: :member
+    get 'dashboard/:organization/repo/:repo', to: 'dashboard#repo', as: :repo
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

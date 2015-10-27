@@ -31,6 +31,25 @@ class Admin::DashboardController < Admin::AdminController
     ).group_by(&:repo)
   end
 
+  def repo
+    @non_pr_commits = CommitDecorator.decorate_collection(
+      Commit.where(organization: params[:organization], repo: params[:repo], pr_number: nil)
+      .order('date DESC')
+    ).group_by(&:author)
+    @opened_prs = PullRequestDecorator.decorate_collection(
+      PullRequest.where(organization: params[:organization], repo: params[:repo])
+      .order('date DESC')
+    ).group_by(&:author)
+    @opened_issues = IssueDecorator.decorate_collection(
+      Issue.where(organization: params[:organization], repo: params[:repo])
+      .order('date DESC')
+    ).group_by(&:author)
+    @comments = CommentDecorator.decorate_collection(
+      Comment.where(organization: params[:organization], repo: params[:repo])
+      .order('date DESC')
+    ).group_by(&:author)
+  end
+
   def sync_github
     GithubSyncService.perform(params[:organization])
 
