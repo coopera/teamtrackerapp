@@ -1,12 +1,18 @@
 class GrouperService < ApplicationService
   def perform
-    {
-      pull_request: activities_grouper(group_activity_by_author(PullRequest)),
-      commit: activities_grouper(group_activity_by_author(Commit))
-    }
+    result = {}
+    %w(pull_request commit issue comment).each do |action|
+      result[action] = activities_grouper(group_activity_by_author(action_class(action)))
+    end
+
+    result
   end
 
   private
+
+  def action_class(action)
+    action.classify.constantize
+  end
 
   def activities_grouper(activities_by_author)
     hsh = {}
